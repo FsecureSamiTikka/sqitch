@@ -139,6 +139,8 @@ sub _listagg_format {
     q{ARRAY(SELECT * FROM UNNEST( array_agg(%s) ) a WHERE a IS NOT NULL)}
 }
 
+sub _registry_file{ file(__FILE__)->dir->file('pg.sql') }
+
 sub _regex_op { '~' }
 
 sub _dbh_callback_connected {
@@ -170,7 +172,7 @@ sub initialize {
         'Sqitch schema "{schema}" already exists',
         schema => $self->registry
     ) if $self->initialized;
-    $self->_run_registry_file( file(__FILE__)->dir->file('pg.sql') );
+    $self->_run_registry_file( $self->_registry_file );
     $self->_register_release;
 }
 
